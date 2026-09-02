@@ -1,27 +1,727 @@
-﻿<!DOCTYPE html>
-
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link href="main.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tuğrul Tosun — Game Developer</title>
+<meta name="description" content="Game developer working in C# and Unity on mobile games — level solvers and generators, designer tooling, live-ops events and monetization.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+<style>
+  /* Committed dark. The page looks the same for every visitor regardless of their
+     system setting, so what gets sent is what gets seen. color-scheme tells the
+     browser to paint form controls and scrollbars dark to match. */
+  :root {
+    color-scheme: dark;
+    --bg: #14161a;
+    --panel: rgba(26, 29, 34, 0.66);
+    --panel-solid: #1a1d22;
+    --ink: #e8eaed;
+    --muted: #a3abb6;
+    --faint: #79818c;
+    --rule: #2a2e35;
+    --accent: #6fc79b;
+    --accent-soft: #1d2a24;
+    --dot: rgba(232, 234, 237, 0.07);
+    --glow-a: rgba(53, 148, 105, 0.22);
+    --glow-b: rgba(46, 116, 158, 0.18);
+    --glow-c: rgba(53, 148, 105, 0.13);
+  }
 
-    <title>Tuğrul Tosun</title>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Soft colour fields behind everything. Fixed, so the page scrolls over a still
+     backdrop rather than dragging it along. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: -10%;
+    z-index: -2;
+    background:
+      radial-gradient(55% 45% at 12% 0%, var(--glow-a), transparent 70%),
+      radial-gradient(45% 40% at 88% 10%, var(--glow-b), transparent 70%),
+      radial-gradient(50% 45% at 50% 95%, var(--glow-c), transparent 70%);
+    animation: drift 30s ease-in-out infinite alternate;
+  }
+
+  /* The drifting dot field. Sits above the colour glows, below every bit of content.
+     pointer-events:none so it never eats a click meant for a link. */
+  #bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  @keyframes drift {
+    to { transform: translate3d(0, -24px, 0) scale(1.06); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    body::before { animation: none; }
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 72px 24px 96px; }
+
+  a { color: var(--accent); }
+
+  /* ---- header ---- */
+
+  .id {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+
+  .id img {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--rule);
+  }
+
+  .id-text { min-width: 0; }
+
+  h1 { font-size: 2rem; line-height: 1.15; margin: 0 0 6px; letter-spacing: -0.02em; }
+
+  .role { margin: 0; color: var(--accent); font-weight: 600; font-size: 1rem; }
+
+  .intro { margin: 0 0 22px; font-size: 1.06rem; color: var(--muted); max-width: 62ch; }
+
+  .links { display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 0; padding: 0; list-style: none; }
+
+  .links a {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--panel-solid);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: border-color .15s, color .15s, transform .15s;
+  }
+
+  .links a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  /* ---- sections ---- */
+
+  h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    font-weight: 700;
+    margin: 60px 0 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .lede { margin: 14px 0 0; color: var(--muted); font-size: 0.94rem; max-width: 62ch; }
+
+  /* ---- case studies ---- */
+
+  .case {
+    margin-top: 22px;
+    padding: 18px 20px;
+    background: var(--panel);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -16px rgba(0, 0, 0, 0.35);
+  }
+
+  .case h3 { margin: 0 0 2px; font-size: 1.02rem; font-weight: 650; }
+
+  .case .where { color: var(--faint); font-size: 0.83rem; font-weight: 400; }
+
+  .case p { margin: 8px 0 0; color: var(--muted); font-size: 0.94rem; }
+
+  .case ul { margin: 10px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.94rem; }
+  .case li { margin-bottom: 6px; }
+  .case li:last-child { margin-bottom: 0; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+
+  .tag {
+    background: var(--accent-soft);
+    color: var(--muted);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.78rem;
+  }
+
+  /* ---- experience ---- */
+
+  .role-block { margin-top: 26px; }
+
+  .role-head {
+    display: flex; flex-wrap: wrap;
+    justify-content: space-between; align-items: baseline;
+    gap: 4px 16px;
+  }
+
+  .role-head h3 { font-size: 1.02rem; margin: 0; font-weight: 650; }
+  .role-head .where { color: var(--muted); font-weight: 400; }
+
+  .dates {
+    color: var(--faint); font-size: 0.85rem;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  .title-block { margin-top: 14px; padding-left: 16px; border-left: 2px solid var(--rule); }
+
+  .title-name { font-weight: 600; font-size: 0.95rem; margin: 0; }
+
+  .title-name .platforms { font-weight: 400; font-size: 0.82rem; color: var(--faint); margin-left: 8px; }
+  .title-name .platforms a { color: var(--accent); text-decoration: none; }
+  .title-name .platforms a:hover { text-decoration: underline; }
+
+  ul.points { margin: 8px 0 0; padding-left: 18px; color: var(--muted); font-size: 0.94rem; }
+  ul.points li { margin-bottom: 6px; }
+  ul.points li:last-child { margin-bottom: 0; }
+  .role-block > ul.points { margin-top: 10px; }
+
+  /* ---- skills ---- */
+
+  .kv { margin-top: 16px; }
+
+  .kv dt {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--faint); font-weight: 600; margin-bottom: 6px;
+  }
+
+  .kv dd { margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 6px; }
+
+  .chip { background: var(--accent-soft); color: var(--ink); border-radius: 5px; padding: 3px 9px; font-size: 0.83rem; }
+
+  /* ---- footer ---- */
+
+  footer {
+    margin-top: 64px; padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    color: var(--faint); font-size: 0.85rem;
+  }
+
+  footer a { color: var(--muted); }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 48px 20px 64px; }
+    h1 { font-size: 1.65rem; }
+    .dates { font-size: 0.8rem; }
+    .case { padding: 16px; }
+  }
+</style>
 </head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="wrap">
 
-<body id="background">
-    <div id="textBody">
-        <h1 style="font-size:250%;">Tuğrul Tosun</h1>
-        <p style="font-size:150%;">B.Sc in Computer Engineering</p>
-        <div>
-            <a href="https://bit.ly/33XF9s9" class="fa fa-github" target="_blank" rel="noopener noreferrer"></a>
-            
-            <a href="https://bit.ly/3IpEEpJ" class="fa fa-linkedin" target="_blank" rel="noopener noreferrer"></a>
-            <a href="mailto:ttosun350@gmail.com" class="fa fa-envelope" target="_blank" rel="noopener noreferrer"></a>
-            
-        </div>
-
+  <header>
+    <div class="id">
+      <img src="avatar.jpg" width="400" height="400" alt="Tuğrul Tosun">
+      <div class="id-text">
+        <h1>Tuğrul Tosun</h1>
+        <p class="role">Game Developer — Unity / C#</p>
+      </div>
     </div>
+    <p class="intro">
+      Software engineer, working mostly in C# and Unity on mobile games — level solvers and
+      generators, the editors designers author content in, live-ops events and monetization.
+    </p>
+    <ul class="links">
+      <li><a href="mailto:ttosun350@gmail.com">Email</a></li>
+      <li><a href="https://github.com/tugrultosun">GitHub</a></li>
+      <li><a href="https://linkedin.com/in/tugrultosun">LinkedIn</a></li>
+      <li><a href="cv.pdf">CV (PDF)</a></li>
+    </ul>
+  </header>
+
+  <main>
+
+    <h2>Selected work</h2>
+    <p class="lede">
+      Six areas I have spent most of my time in, drawn from three shipping titles at Unico Studio.
+    </p>
+
+    <article class="case">
+      <h3>Level solver <span class="where">· Family Sort</span></h3>
+      <p>
+        A BFS search over board states that answers two questions a puzzle game cannot ship
+        without: is this level solvable at all, and what is the shortest way through it. The
+        generator, the level editor and the validators all sit on top of it, so the same search
+        that proves a level is fair also draws the solution animation a designer watches.
+      </p>
+      <ul>
+        <li>Extended for every mechanic added after the first version — hidden colors,
+          lock-and-key chains, frozen and fixed bottles, curtains, ice clusters, carpet groups
+          and tag bottles — each one folded into the same search rather than special-cased
+          beside it.</li>
+        <li>Hidden dependencies (a curtain concealing a colour) are resolved and cleared as the
+          board changes, so the search never reasons from stale state.</li>
+        <li>Cached per level in the gameplay controller, and cloned for the challenge variants,
+          so a mechanic added to the live board reaches the challenge solver too.</li>
+        <li>Handles boards of differing container capacity, which is what let the same solver
+          serve more than one game mode.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">C#</span><span class="tag">BFS / state search</span>
+        <span class="tag">NUnit</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <h3>Level editors <span class="where">· Family Sort, Bus Rush</span></h3>
+      <p>
+        In-Unity authoring tools that let designers build and ship levels without an engineer in
+        the loop. The Family Sort editor was used to author <strong>2,000+ shipped levels</strong>;
+        the Bus Rush editor I built from scratch as its own scene and app.
+      </p>
+      <ul>
+        <li>Visual authoring with brush and palette tools, board resizing, JSON save/load, and
+          one-click playtest straight from the level being edited.</li>
+        <li>Colour-coded solution playback, so a designer can watch the solver's path rather than
+          read it.</li>
+        <li>Validators that refuse a malformed level at save <em>with a named reason</em> — a
+          frozen bottle without a filled fixed neighbour, an unmapped structure, a colour the
+          board does not contain — instead of failing silently and surfacing as a bug in QA.</li>
+        <li>Design warnings that refresh live as a paint stroke ends, rather than only at save.</li>
+        <li>Bot simulation built into the editor, and a level-check pass that writes its results
+          out as a file for review.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Unity Editor</span><span class="tag">UI Toolkit / IMGUI</span>
+        <span class="tag">JSON</span><span class="tag">Tooling</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <h3>Procedural generation &amp; difficulty analysis <span class="where">· Family Sort</span></h3>
+      <p>
+        A generator that turns design parameters into solvable puzzles, and a bot that plays them
+        so difficulty is measured rather than guessed.
+      </p>
+      <ul>
+        <li>Weighted distribution over mechanics, so a designer starts from a working level rather
+          than a blank board — including deriving a level's colour set from what is actually used
+          instead of authoring it by hand.</li>
+        <li>Bot-driven difficulty analysis exporting CSV reports, balanced in Google Sheets. This
+          replaced manual playtesting as the primary balancing signal.</li>
+        <li>Generation for individual mechanics as they landed — carpet groups from a group-size
+          list, tag bottles restricted to colours the board actually has.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">C#</span><span class="tag">Procedural generation</span>
+        <span class="tag">Simulation</span><span class="tag">CSV</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <h3>Gameplay mechanics <span class="where">· Family Sort, Bus Rush, Hop n Sort</span></h3>
+      <p>
+        New mechanics taken end to end — data model, level format, editor authoring, simulation
+        rules, solver support, art wiring, tutorial and tests — rather than handed off halfway.
+      </p>
+      <ul>
+        <li><strong>Family Sort:</strong> tag bottles and carpet groups, each carried from the
+          container data model through the level editor toolbar, the live board rules, the
+          solver's clone, generation, validation, art per colour, a first-encounter tutorial and
+          its localization.</li>
+        <li><strong>Bus Rush:</strong> obstacle and passenger mechanics across level format,
+          editor UI and simulation — box with HP, traffic cone with a hidden colour, phone booth
+          queue overlay authored in its own editor overlay, rope-pull pairs, and naughty
+          passengers.</li>
+        <li><strong>Hop n Sort:</strong> the Undo, Shuffle, Extra Capacity and Remove Color
+          boosters, including the rules bounding how far Undo can reverse — a car parking into a
+          tapped lot ends what Undo can take back — and re-seating survivors after a colour is
+          removed.</li>
+        <li>Reworked the reward and achievement data model when booster types changed, without
+          invalidating players' saved progress.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Gameplay systems</span><span class="tag">Easy Save 3</span>
+        <span class="tag">ScriptableObjects</span><span class="tag">EditMode tests</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <h3>Live ops &amp; progression <span class="where">· Family Sort</span></h3>
+      <p>
+        The recurring events and meta systems that give a live title a reason to be opened
+        tomorrow, plus the flow layer that decides what the player is shown and when.
+      </p>
+      <ul>
+        <li>Event suite: Family Pass, Alpine Race, Smoothie Frenzy, Treetop Ascend, Lava Quest,
+          Garage Sale and Cookie Shop.</li>
+        <li>Boosters, achievements, chests, and the popup/UX flow layer that sequences them so two
+          events do not fight over the screen.</li>
+        <li>Global leaderboard: region detection, country-code caching, profile frames and
+          backgrounds driven from the ranking model, and an unlock tutorial gated behind Remote
+          Config.</li>
+        <li>First-encounter tutorials for new mechanics, with localization.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Firebase Remote Config</span><span class="tag">Live ops</span>
+        <span class="tag">Localization</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <h3>Monetization <span class="where">· Family Sort</span></h3>
+      <p>
+        Ads and in-app purchases, and the parts of both that only show up in production.
+      </p>
+      <ul>
+        <li>Interstitial and banner pacing on layered Remote Config cap rules — including a cap on
+          interstitials measured in seconds since the last rewarded ad, so the two formats stop
+          competing.</li>
+        <li>IAP packaging, discount badges, and offers that move to an expired state when their
+          timer runs out.</li>
+        <li>Offline price fallback: cached store prices when there is no connection, falling back
+          to a USD price from JSON, with locale-correct currency formatting.</li>
+        <li>Localized post-purchase screens per bundle.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">AppLovin MAX</span><span class="tag">AdMob</span>
+        <span class="tag">Unity IAP</span><span class="tag">Remote Config</span>
+      </div>
+    </article>
+
+    <h2>Experience</h2>
+
+    <section class="role-block">
+      <div class="role-head">
+        <h3>Game Developer <span class="where">· Unico Studio</span></h3>
+        <span class="dates">Jul 2025 — Present</span>
+      </div>
+      <ul class="points">
+        <li>Three titles shipping from one multi-game Unity 6 codebase, one branch line per game.
+          Around 1,300 commits to date.</li>
+      </ul>
+
+      <div class="title-block">
+        <p class="title-name">Family Sort <span class="platforms">Android, iOS</span></p>
+        <ul class="points">
+          <li>Level solver, procedural generator, level editor and bot-driven difficulty analysis
+            — see above.</li>
+          <li>Live-ops event suite, boosters, achievements, global leaderboard and the popup flow
+            layer.</li>
+          <li>Ad pacing, IAP packaging, offline pricing and currency formatting.</li>
+        </ul>
+      </div>
+
+      <div class="title-block">
+        <p class="title-name">Bus Rush <span class="platforms">Android, iOS</span></p>
+        <ul class="points">
+          <li>Built the level editor from scratch: dedicated Unity scene and app, brush and palette
+            authoring, board resizing, bus and seat-queue setup, JSON save/load, one-click
+            playtest.</li>
+          <li>Obstacle and passenger mechanics end to end, across level format, editor UI and
+            simulation.</li>
+          <li>Generator that derives the colour set from usage, live design warnings while editing,
+            and a save-time validator that rejects a malformed level with a named reason — covered
+            by EditMode NUnit tests.</li>
+        </ul>
+      </div>
+
+      <div class="title-block">
+        <p class="title-name">Hop n Sort <span class="platforms">Android, iOS</span></p>
+        <ul class="points">
+          <li>Undo, Shuffle, Extra Capacity and Remove Color boosters under full test coverage,
+            including the rules bounding how far Undo can reverse.</li>
+          <li>Reworked the reward and achievement data model when booster types changed, without
+            invalidating players' saved progress.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="role-block">
+      <div class="role-head">
+        <h3>Freelance Software Engineer</h3>
+        <span class="dates">Mar 2024 — Apr 2025</span>
+      </div>
+      <ul class="points">
+        <li>Delivered a canvas-based Unity learning game for primary school students, and a Meta
+          Quest VR application reconstructing original buildings at heritage sites — both scoped
+          directly with the client and delivered on schedule.</li>
+      </ul>
+    </section>
+
+    <section class="role-block">
+      <div class="role-head">
+        <h3>Game Developer <span class="where">· Paxie Games</span></h3>
+        <span class="dates">Jan 2024 — Feb 2024</span>
+      </div>
+      <div class="title-block">
+        <p class="title-name">Tile Star: Dream Makeover <span class="platforms">Android, iOS</span></p>
+        <ul class="points">
+          <li>Built the TeamCity pipeline that pushed builds to Firebase automatically, so QA
+            stopped waiting on a developer to cut a version by hand.</li>
+          <li>Shipped live-ops features including WinStreak, plus gameplay performance work.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="role-block">
+      <div class="role-head">
+        <h3>Game Developer <span class="where">· Cratoonz</span></h3>
+        <span class="dates">Feb 2022 — Oct 2023</span>
+      </div>
+
+      <div class="title-block">
+        <p class="title-name">
+          Cat Heroes: Puzzle Adventure
+          <span class="platforms">
+            <a href="https://play.google.com/store/apps/details?id=com.Cratoonz.CatHeroes">Android</a>,
+            <a href="https://apps.apple.com/us/app/cat-heroes-match-3-puzzles/id1463280131">iOS</a>
+          </span>
+        </p>
+        <ul class="points">
+          <li>Owned the game across levels 1600–2400, adding match-3 board elements and new
+            characters with distinct abilities.</li>
+          <li>Built and deployed A/B tests with the data and product teams, then implemented the
+            changes the results called for — the loop that moved design decisions from opinion to
+            measurement.</li>
+          <li>Owned the build pipeline and shipped regular App Store and Google Play updates, and
+            integrated the ad SDKs the game monetized through (AdMob, Admost).</li>
+        </ul>
+      </div>
+
+      <div class="title-block">
+        <p class="title-name">
+          Match Stars
+          <span class="platforms">
+            <a href="https://play.google.com/store/apps/details?id=com.cratoonz.matchstars">Android</a>,
+            <a href="https://apps.apple.com/tr/app/match-stars/id1640686274">iOS</a>
+          </span>
+        </p>
+        <ul class="points">
+          <li>Built the bot that made offline play a real opponent, the Teams social system, the
+            Hall of Fame leaderboard, and new arena rules and game modes.</li>
+          <li>New heroes with unique abilities and Spine animation, working directly with the art
+            team on asset import.</li>
+          <li>Integrated Adjust, Firebase, Facebook and Embrace for attribution, analytics and
+            social.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="role-block">
+      <div class="role-head">
+        <h3>Game Developer <span class="where">· Cube Games</span></h3>
+        <span class="dates">Nov 2021 — Jan 2022</span>
+      </div>
+      <ul class="points">
+        <li>Prototyped hyper-casual mechanics in Unity, including runner games and ragdoll-physics
+          gameplay.</li>
+      </ul>
+    </section>
+
+    <section class="role-block">
+      <div class="role-head">
+        <h3>Virtual Reality Development Intern <span class="where">· Beren Studio</span></h3>
+        <span class="dates">Jul 2021 — Aug 2021</span>
+      </div>
+      <ul class="points">
+        <li>Built a VR safety-training kit for construction workers: first-person controller and
+          in-environment task authoring.</li>
+      </ul>
+    </section>
+
+    <section class="role-block">
+      <div class="role-head">
+        <h3>Game Developer Intern <span class="where">· Cube Games</span></h3>
+        <span class="dates">Jan 2021 — Feb 2021</span>
+      </div>
+    </section>
+
+    <h2>Skills</h2>
+    <dl class="kv">
+      <dt>Languages</dt>
+      <dd>
+        <span class="chip">C#</span><span class="chip">Python</span>
+        <span class="chip">Java</span><span class="chip">C/C++</span>
+      </dd>
+
+      <dt>Engine &amp; tools</dt>
+      <dd>
+        <span class="chip">Unity 6</span><span class="chip">URP</span>
+        <span class="chip">Addressables</span><span class="chip">Unity Test Framework / NUnit</span>
+        <span class="chip">DOTween</span><span class="chip">Spine</span>
+        <span class="chip">Odin</span><span class="chip">Easy Save 3</span>
+        <span class="chip">Git</span><span class="chip">Perforce</span>
+        <span class="chip">TeamCity</span>
+      </dd>
+
+      <dt>Services &amp; SDKs</dt>
+      <dd>
+        <span class="chip">Firebase</span><span class="chip">Unity Services</span>
+        <span class="chip">AppLovin MAX</span><span class="chip">AdMob</span>
+        <span class="chip">Admost</span><span class="chip">Adjust</span>
+        <span class="chip">Facebook SDK</span><span class="chip">Embrace</span>
+      </dd>
+    </dl>
+
+  </main>
+
+  <footer>
+    Istanbul, Turkey · <a href="mailto:ttosun350@gmail.com">ttosun350@gmail.com</a>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var canvas = document.getElementById('bg');
+  if (!canvas || !canvas.getContext) return;          // no canvas: the gradients still carry it
+  var ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  var DOT = 'rgba(160, 214, 187, ';                   // accent green, alpha appended per draw
+  var LINK_DIST = 130;                                // px: draw a line closer than this
+  var MOUSE_DIST = 170;                               // px: cursor influence radius
+  var MAX_DOTS = 90;                                  // cap, so a 4K monitor does not melt
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var w = 0, h = 0, dots = [], raf = null;
+  var mouse = { x: -9999, y: -9999 };
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.clientWidth;
+    h = canvas.clientHeight;
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function seed() {
+    // Density by area, so a phone gets a handful and a laptop gets a field.
+    var n = Math.max(24, Math.min(MAX_DOTS, Math.round((w * h) / 16000)));
+    dots = [];
+    for (var i = 0; i < n; i++) {
+      dots.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: (Math.random() - 0.5) * 0.22,
+        r: 1 + Math.random() * 1.4
+      });
+    }
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, w, h);
+
+    for (var i = 0; i < dots.length; i++) {
+      var d = dots[i];
+
+      d.x += d.vx;
+      d.y += d.vy;
+
+      // Wrap rather than bounce: no dots piling up along the edges.
+      if (d.x < -20) d.x = w + 20; else if (d.x > w + 20) d.x = -20;
+      if (d.y < -20) d.y = h + 20; else if (d.y > h + 20) d.y = -20;
+
+      // Gentle push away from the cursor, strongest at the centre of its radius.
+      var mdx = d.x - mouse.x, mdy = d.y - mouse.y;
+      var md = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (md < MOUSE_DIST && md > 0.01) {
+        var push = (1 - md / MOUSE_DIST) * 0.9;
+        d.x += (mdx / md) * push;
+        d.y += (mdy / md) * push;
+      }
+
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fillStyle = DOT + '0.45)';
+      ctx.fill();
+
+      // Line to the cursor, so the field visibly follows the mouse.
+      if (md < MOUSE_DIST) {
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = DOT + (0.28 * (1 - md / MOUSE_DIST)).toFixed(3) + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Constellation lines. Inner loop starts at i+1 so each pair is drawn once.
+      for (var j = i + 1; j < dots.length; j++) {
+        var o = dots[j];
+        var dx = d.x - o.x, dy = d.y - o.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < LINK_DIST) {
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(o.x, o.y);
+          ctx.strokeStyle = DOT + (0.17 * (1 - dist / LINK_DIST)).toFixed(3) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+
+    raf = requestAnimationFrame(frame);
+  }
+
+  function start() { if (raf === null) raf = requestAnimationFrame(frame); }
+  function stop() { if (raf !== null) { cancelAnimationFrame(raf); raf = null; } }
+
+  resize();
+  seed();
+
+  if (reduce) {
+    // Motion is off: draw the field once, still, and never animate or track the mouse.
+    frame();
+    stop();
+  } else {
+    window.addEventListener('mousemove', function (e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    }, { passive: true });
+
+    window.addEventListener('mouseout', function () {
+      mouse.x = mouse.y = -9999;
+    }, { passive: true });
+
+    // Nothing to chase on a touch screen, and it would drain the battery.
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop(); else start();
+    });
+
+    start();
+  }
+
+  var t;
+  window.addEventListener('resize', function () {
+    clearTimeout(t);
+    t = setTimeout(function () {
+      resize();
+      seed();
+      if (reduce) frame();
+    }, 150);
+  });
+})();
+</script>
 </body>
 </html>
