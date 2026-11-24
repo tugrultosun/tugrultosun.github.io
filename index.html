@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Tuğrul Tosun — Game Developer</title>
 <meta name="description" content="Game developer working in C# and Unity on mobile games — level solvers and generators, designer tooling, live-ops events and monetization.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://tugrultosun.github.io/">
+<meta property="og:title" content="Tuğrul Tosun — Game Developer">
+<meta property="og:description" content="Game developer working in C# and Unity on mobile games — level solvers and generators, designer tooling, live-ops events and monetization.">
+<meta property="og:image" content="https://tugrultosun.github.io/avatar.jpg">
+<meta name="twitter:card" content="summary">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
 <style>
   /* Committed dark. The page looks the same for every visitor regardless of their
@@ -259,7 +265,7 @@
 
     <h2>Selected work</h2>
     <p class="lede">
-      Six areas I have spent most of my time in, drawn from three shipping titles at Unico Studio.
+      Eight areas I have spent most of my time in, drawn from three titles at Unico Studio.
     </p>
 
     <article class="case">
@@ -289,15 +295,18 @@
     </article>
 
     <article class="case">
-      <h3>Level editors <span class="where">· Family Sort, Bus Rush</span></h3>
+      <h3>Level editors <span class="where">· Family Sort, Cargo Master</span></h3>
       <p>
         In-Unity authoring tools that let designers build and ship levels without an engineer in
         the loop. The Family Sort editor was used to author <strong>2,000+ shipped levels</strong>;
-        the Bus Rush editor I built from scratch as its own scene and app.
+        the Cargo Master editor I built from scratch as its own scene and app, and it now ships
+        as its own build from the same build script as the game.
       </p>
       <ul>
         <li>Visual authoring with brush and palette tools, board resizing, JSON save/load, and
           one-click playtest straight from the level being edited.</li>
+        <li>Works in any level folder, steps through a set with L-/L+, and loads and saves level
+          variants, so a designer reviews 50 levels without reopening a file dialog.</li>
         <li>Colour-coded solution playback, so a designer can watch the solver's path rather than
           read it.</li>
         <li>Validators that refuse a malformed level at save <em>with a named reason</em> — a
@@ -314,10 +323,11 @@
     </article>
 
     <article class="case">
-      <h3>Procedural generation &amp; difficulty analysis <span class="where">· Family Sort</span></h3>
+      <h3>Procedural generation &amp; difficulty <span class="where">· Family Sort</span></h3>
       <p>
-        A generator that turns design parameters into solvable puzzles, and a bot that plays them
-        so difficulty is measured rather than guessed.
+        A generator that turns design parameters into solvable puzzles, a bot that plays them so
+        difficulty is measured rather than guessed, and dynamic difficulty that adjusts to the
+        player in production.
       </p>
       <ul>
         <li>Weighted distribution over mechanics, so a designer starts from a working level rather
@@ -325,17 +335,20 @@
           instead of authoring it by hand.</li>
         <li>Bot-driven difficulty analysis exporting CSV reports, balanced in Google Sheets. This
           replaced manual playtesting as the primary balancing signal.</li>
-        <li>Generation for individual mechanics as they landed — carpet groups from a group-size
-          list, tag bottles restricted to colours the board actually has.</li>
+        <li>Dynamic difficulty driven from Remote Config: it eases sooner on easy levels and later
+          on hard ones, and logs the level it judged so every difficulty call can be checked.</li>
+        <li>Level sets integrated in batches, with a drift guard test that catches a set whose
+          files no longer match its looping range.</li>
       </ul>
       <div class="tags">
         <span class="tag">C#</span><span class="tag">Procedural generation</span>
-        <span class="tag">Simulation</span><span class="tag">CSV</span>
+        <span class="tag">Simulation</span><span class="tag">Remote Config</span>
+        <span class="tag">CSV</span>
       </div>
     </article>
 
     <article class="case">
-      <h3>Gameplay mechanics <span class="where">· Family Sort, Bus Rush, Hop n Sort</span></h3>
+      <h3>Gameplay mechanics <span class="where">· Family Sort, Cargo Master, Hop n Sort</span></h3>
       <p>
         New mechanics taken end to end — data model, level format, editor authoring, simulation
         rules, solver support, art wiring, tutorial and tests — rather than handed off halfway.
@@ -345,10 +358,11 @@
           container data model through the level editor toolbar, the live board rules, the
           solver's clone, generation, validation, art per colour, a first-encounter tutorial and
           its localization.</li>
-        <li><strong>Bus Rush:</strong> obstacle and passenger mechanics across level format,
-          editor UI and simulation — box with HP, traffic cone with a hidden colour, phone booth
-          queue overlay authored in its own editor overlay, rope-pull pairs, and naughty
-          passengers.</li>
+        <li><strong>Cargo Master:</strong> obstacles and passenger rules across level format,
+          editor UI and simulation — boxes with HP that drop once per chain, a tired passenger
+          whose counter travels with it and ends in a bomb, lovers that move as one pair, rope
+          pullers that step together, phone booths, cages and keys, teleporters, springs, and a
+          Honk booster that claims seats before it offers them to a partner.</li>
         <li><strong>Hop n Sort:</strong> the Undo, Shuffle, Extra Capacity and Remove Color
           boosters, including the rules bounding how far Undo can reverse — a car parking into a
           tapped lot ends what Undo can take back — and re-seating survivors after a colour is
@@ -363,7 +377,37 @@
     </article>
 
     <article class="case">
-      <h3>Live ops &amp; progression <span class="where">· Family Sort</span></h3>
+      <h3>Taking a game from prototype to store build <span class="where">· Cargo Master</span></h3>
+      <p>
+        Cargo Master started as Bus Rush, a prototype on a branch of the shared codebase. Over two
+        months I took it to a store-ready build — builds 8 to 25.
+      </p>
+      <ul>
+        <li>Renamed the game and its branch line across code, assets, build tools and the team's
+          task routing, then gave it its own bundle id, Firebase project, ad and attribution ids,
+          and Android upload key.</li>
+        <li>Shipped the designer's levels in batches up to 200, looping 101–200 after the last,
+          with a debug level set switchable from the in-game debug panel.</li>
+        <li>Put every screen on the delivered art: home, shop, win, lose, fail offer, restart,
+          quit, settings, rate-us, purchase and feature-unlock screens, plus a new app icon and
+          splash.</li>
+        <li>Integrated the art team's Spine characters and VFX — the drone, the naughty box,
+          box-break, rope-burst, cage-and-key, phone-booth and teleporter effects — and the game's
+          full sound set.</li>
+        <li>Game feel: boxes that arc into their truck and refill the board unevenly, trucks that
+          pull away with weight, a win screen with confetti and fireworks.</li>
+        <li>Tutorials for the first three levels, Remote Config setup, and in-app purchases on the
+          real Play Console product ids.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Unity</span><span class="tag">Spine</span>
+        <span class="tag">Firebase</span><span class="tag">Remote Config</span>
+        <span class="tag">Unity IAP</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <h3>Live ops &amp; progression <span class="where">· Family Sort, Hop n Sort</span></h3>
       <p>
         The recurring events and meta systems that give a live title a reason to be opened
         tomorrow, plus the flow layer that decides what the player is shown and when.
@@ -376,6 +420,9 @@
         <li>Global leaderboard: region detection, country-code caching, profile frames and
           backgrounds driven from the ranking model, and an unlock tutorial gated behind Remote
           Config.</li>
+        <li>Hop n Sort: New Feature screens and a win-screen progress bar driven by the level
+          data, so a player updating mid-game is never introduced to a feature they have already
+          played.</li>
         <li>First-encounter tutorials for new mechanics, with localization.</li>
       </ul>
       <div class="tags">
@@ -385,7 +432,7 @@
     </article>
 
     <article class="case">
-      <h3>Monetization <span class="where">· Family Sort</span></h3>
+      <h3>Monetization <span class="where">· Family Sort, Hop n Sort, Cargo Master</span></h3>
       <p>
         Ads and in-app purchases, and the parts of both that only show up in production.
       </p>
@@ -395,6 +442,8 @@
           competing.</li>
         <li>IAP packaging, discount badges, and offers that move to an expired state when their
           timer runs out.</li>
+        <li>Fail-screen offers, Welcome and No Ads packs, and timed unlimited lives inside the
+          packs.</li>
         <li>Offline price fallback: cached store prices when there is no connection, falling back
           to a USD price from JSON, with locale-correct currency formatting.</li>
         <li>Localized post-purchase screens per bundle.</li>
@@ -402,6 +451,33 @@
       <div class="tags">
         <span class="tag">AppLovin MAX</span><span class="tag">AdMob</span>
         <span class="tag">Unity IAP</span><span class="tag">Remote Config</span>
+      </div>
+    </article>
+
+    <article class="case">
+      <h3>Shared platform &amp; SDK <span class="where">· all titles</span></h3>
+      <p>
+        Work on the platform every game shares, done once on the trunk and merged into each game
+        line.
+      </p>
+      <ul>
+        <li>Migrated Family Sort, Hop n Sort and Cargo Master from an embedded copy of the company
+          SDK to the Unico SDK package: removed the old integration, wired each game's ids and
+          bootstrap, and kept every game current through its updates.</li>
+        <li>An analytics kill switch on the shared trunk, and Bigo Ads and Chartboost mediation
+          adapters for the three games.</li>
+        <li>A Privacy Rights and Delete Account flow, with its texts and tests, shipped to every
+          game line.</li>
+        <li>Contact links, legal pages and support mail per game from one table, with Turkish mail
+          text on Turkish devices.</li>
+        <li>Tooltips that use each language's font, with the Arabic right-to-left fix.</li>
+        <li>Moved the codebase to Unity 6000.3, and added Level Editor builds to the build script
+          and the build skill.</li>
+      </ul>
+      <div class="tags">
+        <span class="tag">Unity 6</span><span class="tag">UPM</span>
+        <span class="tag">Firebase</span><span class="tag">AppLovin MAX</span>
+        <span class="tag">Localization</span>
       </div>
     </article>
 
@@ -413,8 +489,8 @@
         <span class="dates">Jul 2025 — Present</span>
       </div>
       <ul class="points">
-        <li>Three titles shipping from one multi-game Unity 6 codebase, one branch line per game.
-          Around 1,300 commits to date.</li>
+        <li>Three titles from one multi-game Unity 6 codebase, one branch line per game. Around
+          1,650 commits to date.</li>
       </ul>
 
       <div class="title-block">
@@ -422,6 +498,8 @@
         <ul class="points">
           <li>Level solver, procedural generator, level editor and bot-driven difficulty analysis
             — see above.</li>
+          <li>Dynamic difficulty tuning, level sets 5–8, and layout fixes for foldable and wide
+            screens.</li>
           <li>Live-ops event suite, boosters, achievements, global leaderboard and the popup flow
             layer.</li>
           <li>Ad pacing, IAP packaging, offline pricing and currency formatting.</li>
@@ -429,16 +507,16 @@
       </div>
 
       <div class="title-block">
-        <p class="title-name">Bus Rush <span class="platforms">Android, iOS</span></p>
+        <p class="title-name">Cargo Master <span class="platforms">(formerly Bus Rush) · Android, iOS</span></p>
         <ul class="points">
           <li>Built the level editor from scratch: dedicated Unity scene and app, brush and palette
-            authoring, board resizing, bus and seat-queue setup, JSON save/load, one-click
-            playtest.</li>
+            authoring, board resizing, truck and waiting-row setup, folder and variant navigation,
+            JSON save/load, one-click playtest.</li>
           <li>Obstacle and passenger mechanics end to end, across level format, editor UI and
             simulation.</li>
-          <li>Generator that derives the colour set from usage, live design warnings while editing,
-            and a save-time validator that rejects a malformed level with a named reason — covered
-            by EditMode NUnit tests.</li>
+          <li>Took the game from prototype to store-ready build: rename, own ids and signing, 200
+            levels, every screen on final art, Spine and VFX integration, sound, Remote Config and
+            real-store purchases.</li>
         </ul>
       </div>
 
@@ -447,8 +525,18 @@
         <ul class="points">
           <li>Undo, Shuffle, Extra Capacity and Remove Color boosters under full test coverage,
             including the rules bounding how far Undo can reverse.</li>
+          <li>The game's UI and feel pass: win screen with a Spine trolley, fail-screen offers,
+            shop, sounds and music, New Feature screens, level tutorials and a three-tab home.</li>
           <li>Reworked the reward and achievement data model when booster types changed, without
             invalidating players' saved progress.</li>
+        </ul>
+      </div>
+
+      <div class="title-block">
+        <p class="title-name">Shared platform</p>
+        <ul class="points">
+          <li>Unico SDK package migration, Privacy Rights flow, mediation adapters and the Unity
+            6.3 upgrade across every game line.</li>
         </ul>
       </div>
     </section>
@@ -487,13 +575,7 @@
       </div>
 
       <div class="title-block">
-        <p class="title-name">
-          Cat Heroes: Puzzle Adventure
-          <span class="platforms">
-            <a href="https://play.google.com/store/apps/details?id=com.Cratoonz.CatHeroes">Android</a>,
-            <a href="https://apps.apple.com/us/app/cat-heroes-match-3-puzzles/id1463280131">iOS</a>
-          </span>
-        </p>
+        <p class="title-name">Cat Heroes: Puzzle Adventure <span class="platforms">Android, iOS</span></p>
         <ul class="points">
           <li>Owned the game across levels 1600–2400, adding match-3 board elements and new
             characters with distinct abilities.</li>
@@ -506,13 +588,7 @@
       </div>
 
       <div class="title-block">
-        <p class="title-name">
-          Match Stars
-          <span class="platforms">
-            <a href="https://play.google.com/store/apps/details?id=com.cratoonz.matchstars">Android</a>,
-            <a href="https://apps.apple.com/tr/app/match-stars/id1640686274">iOS</a>
-          </span>
-        </p>
+        <p class="title-name">Match Stars <span class="platforms">Android, iOS</span></p>
         <ul class="points">
           <li>Built the bot that made offline play a real opponent, the Teams social system, the
             Hall of Fame leaderboard, and new arena rules and game modes.</li>
